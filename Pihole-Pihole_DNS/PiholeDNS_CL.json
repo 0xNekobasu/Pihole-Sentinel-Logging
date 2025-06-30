@@ -1,0 +1,33 @@
+{
+    "properties": {
+        "schema": {
+               "name": "PiholeDNS_CL",
+               "columns": [
+                    {
+                        "name": "TimeGenerated",
+                        "type": "DateTime"
+                    }, 
+                    {
+                        "name": "Service",
+                        "type": "string"
+                    },
+                    {
+                        "name":"Action",
+                        "Type":"string"
+                    },
+                    {
+                        "name": "Domain",
+                        "type": "string"
+                    },
+                    {
+                        "name": "StatusOrDirection",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Value",
+                        "type":"string"
+                    }
+              ]
+        }
+    }
+}

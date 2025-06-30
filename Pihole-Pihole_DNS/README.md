@@ -1,0 +1,82 @@
+# Pihole DNS Custom Log Ingestion Setup
+
+## Information
+This guide only serves as my own interpretation of how the Pihole DNS logs should look in Sentinel. These logs are just DNSMASQ logs in a different location and filename at the
+end of the day. 
+
+1. Enable "Full/Enhanced" logging on the Pihole by doing the following:
+`sudo sh -c 'echo "log-queries=extra" > /etc/dnsmasq.d/99-pihole-log-facility.conf'`
+
+2. Restart the pihole FTL service
+
+3. Setup Custom Table in Log Analytics using the following guide and the following templates linked:
+https://learn.microsoft.com/en-us/azure/sentinel/connect-custom-logs-ama?tabs=portal
+
+- Run the following powershell:
+`az login`
+
+- Set a variable which contains the table parameters as found in PiholeDNS_CL.json (See link above on how)
+use:
+
+`$VARIABLENAME = @'`
+`{`
+`    "properties": {`
+`        "schema": {`
+`               "name": "PiholeDNS_CL",`
+`               "columns": [`
+`                    {`
+`                        "name": "TimeGenerated",`
+`                        "type": "DateTime"`
+`                    }, `
+`                    {`
+`                        "name": "Service",`
+`                        "type": "string"`
+`                    },`
+`                    {`
+`                        "name":"Action",`
+`                        "Type":"string"`
+`                    },`
+`                    {`
+`                        "name": "Domain",`
+`                        "type": "string"`
+`                    },`
+`                    {`
+`                        "name": "StatusOrDirection",`
+`                        "type": "string"`
+`                    },`
+`                    {`
+`                        "name": "Value",`
+`                        "type":"string"`
+`                    }`
+`              ]`
+`        }`
+`    }`
+`}`
+`'@`
+
+- Run the following but modify it to suit your Azure environment:
+`Invoke-AzRestMethod -Path "/subscriptions/{subscriptionID}/resourcegroups/{resourcegroup}/providers/microsoft.operationalinsights/workspaces/{Workspace}/tables/{TableName}_CL?api-version=2021-12-01-preview" -Method PUT -payload $VARIABLEFROM ABOVE`
+
+4. Create Data Collection Rule to collect these logs. As there are other Pihole Logs to collect this will be named something more generic like "Pihole Application Logs" in my own envrionment but feel free to make individual DCR's for each type of log.
+
+Target the pihole machines you have which contain the logfile in question. 
+
+5. When adding your datasource set the following:
+
+| Setting | Value |
+|---------|-------|
+| Data Source type | Custom Text Logs |
+| File Pattern | /var/log/pihole/pihole.log |
+| Table Name | <Insert your Table Name here> |
+| Record Delimiter | Timestamp |
+| Timestamp Format | MMM D hh:mm:ss|
+
+The Transform query can be something like this:
+
+This transformation query will pull all the logs though into the custom table.
+`source | extend d = split(RawData, " ") | project TimeGenerated ,Service=trim(':',tostring(d[3])),Action=tostring(d[4]), Domain = tostring(d[5]), StatusOrDirection=tostring(d[6]),Value = tostring(d[7])`
+
+6. Once deployed, the logs should appear in your custom table after about 5 minutes.
+
+7. You may want specific information rather than the whole log. For this there are some functions which you can use and deploy which will filter the logs for you nicely at a glance.
+See : INSERT LINK

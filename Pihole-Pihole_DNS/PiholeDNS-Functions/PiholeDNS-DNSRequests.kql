@@ -1,0 +1,7 @@
+let Knownhosts = _GetWatchlist("Pihole-KnownHosts")|project HostIP=SearchKey, HostName, HostDescription;
+PiholeDNS_CL
+| where Action has "query"
+|extend vIP= replace(@'\r|\n|\t', '', tostring(Value))
+|join kind=leftouter (Knownhosts) on $left.vIP == $right.HostIP
+|project-away Value
+|project TimeGenerated, Service, Action,Domain,StatusOrDirection,HostIP=vIP, HostName,HostDescription
