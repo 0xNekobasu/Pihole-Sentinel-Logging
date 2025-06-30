@@ -17,43 +17,43 @@ https://learn.microsoft.com/en-us/azure/sentinel/connect-custom-logs-ama?tabs=po
 
 - Set a variable which contains the table parameters as found in PiholeDNS_CL.json (See link above on how)
 use:
-
-`$VARIABLENAME = @'`
-`{`
-`    "properties": {`
-`        "schema": {`
-`               "name": "PiholeDNS_CL",`
-`               "columns": [`
-`                    {`
-`                        "name": "TimeGenerated",`
-`                        "type": "DateTime"`
-`                    }, `
-`                    {`
-`                        "name": "Service",`
-`                        "type": "string"`
-`                    },`
-`                    {`
-`                        "name":"Action",`
-`                        "Type":"string"`
-`                    },`
-`                    {`
-`                        "name": "Domain",`
-`                        "type": "string"`
-`                    },`
-`                    {`
-`                        "name": "StatusOrDirection",`
-`                        "type": "string"`
-`                    },`
-`                    {`
-`                        "name": "Value",`
-`                        "type":"string"`
-`                    }`
-`              ]`
-`        }`
-`    }`
-`}`
-`'@`
-
+```
+$VARIABLENAME = @'
+{
+    "properties": {
+        "schema": {
+               "name": "PiholeDNS_CL",
+               "columns": [
+                    {
+                        "name": "TimeGenerated",
+                        "type": "DateTime"
+                    }, 
+                    {
+                        "name": "Service",
+                        "type": "string"
+                    },
+                    {
+                        "name":"Action",
+                        "Type":"string"
+                    },
+                    {
+                        "name": "Domain",
+                        "type": "string"
+                    },
+                    {
+                        "name": "StatusOrDirection",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Value",
+                        "type":"string"
+                    }
+              ]
+        }
+    }
+}
+'@
+```
 - Run the following but modify it to suit your Azure environment:
 `Invoke-AzRestMethod -Path "/subscriptions/{subscriptionID}/resourcegroups/{resourcegroup}/providers/microsoft.operationalinsights/workspaces/{Workspace}/tables/{TableName}_CL?api-version=2021-12-01-preview" -Method PUT -payload $VARIABLEFROM ABOVE`
 
