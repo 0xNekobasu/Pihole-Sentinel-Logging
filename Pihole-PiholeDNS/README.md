@@ -60,6 +60,10 @@ $VARIABLENAME = @'
                     {
                         "name": "Value",
                         "type":"string"
+                    },
+                    {
+                        "name": "Computer",
+                        "type":"string"
                     }
               ]
         }
@@ -72,7 +76,7 @@ $VARIABLENAME = @'
 Invoke-AzRestMethod -Path "/subscriptions/{subscriptionID}/resourcegroups/{resourcegroup}/providers/microsoft.operationalinsights/workspaces/{Workspace}/tables/{TableName}_CL?api-version=2021-12-01-preview" -Method PUT -payload $VARIABLEFROM ABOVE
 ```
 
-4. You will need a Data Collection Endpoint to ingest Custom text file logs. Create one of these.
+4. You will need a Data Collection Endpoint to ingest Custom text file logs. Create one of these if you don't have one already.
 
 5. Create Data Collection Rule to collect these logs. As there are other Pihole Logs to collect this will be named something more generic like "Pihole Application Logs" in my own envrionment but feel free to make individual DCR's for each type of log.
 
@@ -93,9 +97,11 @@ Target the pihole machines you have which contain the logfile in question.
 The Transform query can be something like this:
 
 This transformation query will pull all the logs though into the custom table.
-`source | extend d = split(RawData, " ") | project TimeGenerated ,Service=trim(':',tostring(d[3])),Action=tostring(d[4]), Domain = tostring(d[5]), StatusOrDirection=tostring(d[6]),Value = tostring(d[7])`
+```
+source | extend d = split(RawData, " ") | project TimeGenerated ,Service=trim(':',tostring(d[3])),Action=tostring(d[4]), Domain = tostring(d[5]), StatusOrDirection=tostring(d[6]),Value = tostring(d[7])
+```
 
 7. Once deployed, the logs should appear in your custom table after about 5 minutes.
 
 8. You may want specific information rather than the whole log. For this there are some functions which you can use and deploy which will filter the logs for you nicely at a glance.
-See : [PiholeDNS-Functions](https://github.com/0xNekobasu/Pihole-Sentinel-Logging/tree/main/Pihole-Pihole_DNS/PiholeDNS-Functions)
+See : [PiholeDNS-Functions](https://github.com/0xNekobasu/Pihole-Sentinel-Logging/tree/main/Pihole-PiholeDNS/PiholeDNS-Functions)

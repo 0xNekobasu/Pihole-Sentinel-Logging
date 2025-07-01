@@ -1,0 +1,29 @@
+{
+    "properties": {
+        "schema": {
+               "name": "PiholeFTL_CL",
+               "columns": [
+                    {
+                        "name": "TimeGenerated",
+                        "type": "DateTime"
+                    }, 
+                    {
+                        "name": "ProcessID",
+                        "type": "int"
+                    },
+                    {
+                        "name":"ThreadID",
+                        "Type":"string"
+                    },
+                    {
+                        "name":"LogLevel",
+                        "Type":"string"
+                    },
+                    {
+                        "name": "Message",
+                        "type":"string"
+                    }
+              ]
+        }
+    }
+}

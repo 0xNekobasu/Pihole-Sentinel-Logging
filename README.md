@@ -16,3 +16,7 @@ This repo contains the following:
 
 ## Setup PiholeDNS Logs to Sentinel:
 Link: [PiholeDNS_CL Setup Guide](https://github.com/0xNekobasu/Pihole-Sentinel-Logging/tree/main/Pihole-Pihole_DNS)
+
+
+## Setup PiholeFTL Logs to Sentinel:
+
