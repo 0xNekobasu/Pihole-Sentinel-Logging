@@ -10,16 +10,20 @@ The use of the watchlists allows for easier management in my eyes. You can also 
 This function simply just gathers all the queries that have been made to the Pihole, it does not show any responses or if the query was cached etc. Simply X Host made this request.
 
 Initalisation of the watchlist which contains your known hosts
-`let Knownhosts = _GetWatchlist("Pihole-KnownHosts")|project HostIP=SearchKey, HostName, HostDescription;`
-
-`PiholeDNS_CL`
-`| where Action has "query"`
+```
+let Knownhosts = _GetWatchlist("Pihole-KnownHosts")|project HostIP=SearchKey, HostName, HostDescription;
+PiholeDNS_CL
+| where Action has "query"
+```
 You typically wouldn't need to have a "Replace" here to remove any hidden characters but i found that in my case the Value column contained hidden characters. This caused an issue so I filtered them out so the join statement would work correctly
-`|extend vIP= replace(@'\r|\n|\t', '', tostring(Value))`
+```
+|extend vIP= replace(@'\r|\n|\t', '', tostring(Value))
+```
 Join to the PiholeDNS_CL data. 
-`|join kind=leftouter (Knownhosts) on $left.vIP == $right.HostIP`
-`|project-away Value`
-`|project TimeGenerated, Service, Action,Domain,StatusOrDirection,HostIP=vIP, HostName,HostDescription`
-
+```
+|join kind=leftouter (Knownhosts) on $left.vIP == $right.HostIP`
+|project-away Value`
+|project TimeGenerated, Service, Action,Domain,StatusOrDirection,HostIP=vIP, HostName,HostDescription`
+```
 
 

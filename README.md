@@ -12,3 +12,7 @@ This repo contains the following:
 - Guide to setup Pihole DNS logs, Pihole FTL logs and the Webserver logs to Log Analytics
 
 - Useful functions for analysing some of the Pihole Logs including a watchlist which enriches the data you ingest to make the logs slightly more useful. 
+
+
+## Setup PiholeDNS Logs to Sentinel:
+Link: [PiholeDNS_CL Setup Guide](https://github.com/0xNekobasu/Pihole-Sentinel-Logging/tree/main/Pihole-Pihole_DNS)
