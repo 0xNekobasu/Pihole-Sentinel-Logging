@@ -88,7 +88,7 @@ Target any pihole machines you have.
 |---------|-------|
 | Data Source type | Custom Text Logs |
 | File Pattern | /var/log/pihole/pihole.log |
-| Table Name | <Insert your Table Name here> |
+| Table Name | PiholeDNS_CL |
 | Record Delimiter | Timestamp |
 | Timestamp Format | MMM D hh:mm:ss|
 

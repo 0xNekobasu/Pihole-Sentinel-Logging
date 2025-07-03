@@ -71,7 +71,7 @@ Target any pihole machines you have.
 |---------|-------|
 | Data Source type | Custom Text Logs |
 | File Pattern | /var/log/pihole/FTL.log |
-| Table Name | <Insert your Table Name here> |
+| Table Name | PiholeFTL_CL |
 | Record Delimiter | Timestamp |
 | Timestamp Format | YYYY-MM-DD HH:MM:SS |
 
