@@ -1,4 +1,3 @@
-# WIP!
 # Pihole DNS Custom Log Ingestion Setup
 
 ## Information
@@ -24,37 +23,29 @@ https://learn.microsoft.com/en-us/azure/sentinel/connect-custom-logs-ama?tabs=po
 - Run the following powershell and login to the tenant which you wish to create the custom table, you will need Log Analytics Contributor at minimum to do this:
 `az login`
 
-- Set a variable which contains the table parameters as found in PiholeDNS_CL.json (See link above on how)
+- Set a variable which contains the table parameters as found in PiholeFTL_CL.json (See link above on how)
 use:
 ```
 $VARIABLENAME = @'
 {
     "properties": {
         "schema": {
-               "name": "PiholeDNS_CL",
+               "name": "PiholeFTL_CL",
                "columns": [
                     {
                         "name": "TimeGenerated",
                         "type": "DateTime"
                     }, 
                     {
-                        "name": "Service",
+                        "name": "ProcessAndThreadID",
                         "type": "string"
                     },
                     {
-                        "name":"Action",
+                        "name":"LogLevel",
                         "Type":"string"
                     },
                     {
-                        "name": "Domain",
-                        "type": "string"
-                    },
-                    {
-                        "name": "StatusOrDirection",
-                        "type": "string"
-                    },
-                    {
-                        "name": "Value",
+                        "name": "Message",
                         "type":"string"
                     }
               ]
@@ -70,31 +61,23 @@ Invoke-AzRestMethod -Path "/subscriptions/{subscriptionID}/resourcegroups/{resou
 
 4. You will need a Data Collection Endpoint to ingest Custom text file logs. Create one of these if you don't have one already.
 
-5. Create Data Collection Rule to collect these logs. You can only have 1 set of custom text logs per DCR so call this something like `<tenant Identifier>-DCR-PiholeDNS`
-Target any pihole machines you have
+5. Create Data Collection Rule to collect these logs. You can only have 1 set of custom text logs per DCR so call this something like `<tenant Identifier>-DCR-PiholeFTL`
+Ensure you select a Data Collection Endpoint on the creation of the DCR
+Target any pihole machines you have.
 
 6. When adding your datasource set the following:
 
 | Setting | Value |
 |---------|-------|
 | Data Source type | Custom Text Logs |
-| File Pattern | /var/log/pihole/pihole.log |
+| File Pattern | /var/log/pihole/FTL.log |
 | Table Name | <Insert your Table Name here> |
 | Record Delimiter | Timestamp |
-| Timestamp Format | MMM D hh:mm:ss|
+| Timestamp Format | YYYY-MM-DD HH:MM:SS |
 
-The Transform query can be something like this:
-
-This transformation query will pull all the logs though into the custom table.
+This transformation query will pull all the logs though into the custom table and sort them into the columns you setup earlier.
 ```
-source |  parse RawData with TimeGenerated:datetime " UTC [" ProcessID:int "/" ThreadID:string "] " LogLevel ":" Message
-```
-Or 
-```
-source | extend d = split(Source, " UTC") | extend t = dynamic_to_json(d) | project TimeGenerated = parse_json(t)[0], Message = tostring(d[1])
+source | project TimeGenerated, ProcessAndThreadID = extract(@'\[(.*?)\]', 1, RawData), LogLevel = extract(@'\] (\w+):', 1, RawData) , Message = extract(@'\w+: (.*)', 1, RawData)
 ```
 
 7. Once deployed, the logs should appear in your custom table after about 5 minutes.
-
-8. You may want specific information rather than the whole log. For this there are some functions which you can use and deploy which will filter the logs for you nicely at a glance.
-See : [PiholeDNS-Functions](https://github.com/0xNekobasu/Pihole-Sentinel-Logging/tree/main/Pihole-PiholeDNS/PiholeDNS-Functions)

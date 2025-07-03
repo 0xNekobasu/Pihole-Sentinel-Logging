@@ -78,11 +78,9 @@ Invoke-AzRestMethod -Path "/subscriptions/{subscriptionID}/resourcegroups/{resou
 
 4. You will need a Data Collection Endpoint to ingest Custom text file logs. Create one of these if you don't have one already.
 
-5. Create Data Collection Rule to collect these logs. As there are other Pihole Logs to collect this will be named something more generic like "Pihole Application Logs" in my own envrionment but feel free to make individual DCR's for each type of log.
-
-
-
-Target the pihole machines you have which contain the logfile in question. 
+5. Create Data Collection Rule to collect these logs. You can only have 1 set of custom text logs per DCR so call this something like `<tenant Identifier>-DCR-PiholeFTL`
+Ensure you select a Data Collection Endpoint on the creation of the DCR
+Target any pihole machines you have.
 
 6. When adding your datasource set the following:
 

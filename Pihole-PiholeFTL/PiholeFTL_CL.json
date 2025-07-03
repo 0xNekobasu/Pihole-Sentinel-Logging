@@ -8,12 +8,8 @@
                         "type": "DateTime"
                     }, 
                     {
-                        "name": "ProcessID",
-                        "type": "int"
-                    },
-                    {
-                        "name":"ThreadID",
-                        "Type":"string"
+                        "name": "ProcessAndThreadID",
+                        "type": "string"
                     },
                     {
                         "name":"LogLevel",
