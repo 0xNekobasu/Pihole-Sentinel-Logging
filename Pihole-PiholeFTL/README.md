@@ -9,7 +9,6 @@ You will need the ability to assign roles in Azure, modify Log analytics workspa
 Following the principle of least privilege you will need a concotion of:
 - Log analytics Contributor 
 - Monitoring Contributor
-- Role Based Access Control Administrator (for assigning roles to the managed identities later)
 
 For the things such as creating watchlists this would require:
 - Sentinel Contributor
